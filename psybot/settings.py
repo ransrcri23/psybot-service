@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'drf_spectacular',
     'accounts'
 ]
 
@@ -128,7 +129,25 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# OpenAPI 3 settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'PsyBot API',
+    'DESCRIPTION': 'API for PsyBot psychological support service',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SECURITY': [{
+        'type': 'http',
+        'scheme': 'bearer',
+        'bearerFormat': 'JWT',
+    }],
+    'AUTHENTICATION_WHITELIST': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
 }
 
 CORS_ALLOWED_ORIGINS = [
@@ -138,7 +157,7 @@ CORS_ALLOWED_ORIGINS = [
 from mongoengine import connect
 
 connect(
-    db='your_db_name',
-    host='localhost',  # or 'mongo' if using Docker
+    db='psybot_db',
+    host='mongo',  # Docker service name
     port=27017
 )

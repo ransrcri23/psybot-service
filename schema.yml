@@ -1,0 +1,431 @@
+openapi: 3.0.3
+info:
+  title: PsyBot API
+  version: 1.0.0
+  description: API for PsyBot psychological support service
+paths:
+  /api/token/:
+    post:
+      operationId: api_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+        required: true
+      security:
+      - type: http
+        scheme: bearer
+        bearerFormat: JWT
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: api_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+        required: true
+      security:
+      - type: http
+        scheme: bearer
+        bearerFormat: JWT
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/users/:
+    get:
+      operationId: api_users_list
+      description: Adaptation of DRF ModelViewSet
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - type: http
+        scheme: bearer
+        bearerFormat: JWT
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+    post:
+      operationId: api_users_create
+      description: Adaptation of DRF ModelViewSet
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - type: http
+        scheme: bearer
+        bearerFormat: JWT
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/{id}/:
+    get:
+      operationId: api_users_retrieve
+      description: Adaptation of DRF ModelViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - type: http
+        scheme: bearer
+        bearerFormat: JWT
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: api_users_update
+      description: Adaptation of DRF ModelViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - type: http
+        scheme: bearer
+        bearerFormat: JWT
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: api_users_partial_update
+      description: Adaptation of DRF ModelViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+      security:
+      - jwtAuth: []
+      - type: http
+        scheme: bearer
+        bearerFormat: JWT
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: api_users_destroy
+      description: Adaptation of DRF ModelViewSet
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - type: http
+        scheme: bearer
+        bearerFormat: JWT
+      - {}
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    PatchedUserRequest:
+      type: object
+      description: |-
+        Serializer for Documents.
+
+        Recognized primitve fields:
+
+            * ``StringField``
+            * ``URLField``
+            * ``EmailField``
+            * ``IntField``
+            * ``LongField``
+            * ``FloatField``
+            * ``DecimalField``
+            * ``BooleanField``
+            * ``DateTimeField``
+            * ``ComplexDateTimeField``
+            * ``ObjectIdField``
+            * ``SequenceField`` (assumes it has integer counter)
+            * ``UUIDField``
+            * ``GeoPointField``
+            * ``GeoJsonBaseField`` (all those fields)
+            * ``DateField``
+
+        Compound fields: ``ListField`` and ``DictField`` are mapped to corresponding DRF fields, with respect to nested field specification.
+
+        The ``ReferenceField`` is handled like ``ForeignKey`` in DRF: there nested serializer autogenerated if serializer depth greater then 0, otherwise it's handled by it's own (results as ``str(id)``).
+
+        For ``EmbeddedDocumentField`` also nested serializer autogenerated for non-zero depth, otherwise it is skipped. TODO: THIS IS PROBABLY WRONG AND SHOULD BE FIXED.
+
+        Generic fields ``GenericReferenceField`` and ``GenericEmbeddedDocumentField`` are handled by their own with corresponding serializer fields.
+
+        Not well supported or untested:
+
+            ``FileField``
+            ``ImageField``
+            ``BinaryField``
+
+        All other fields are mapped to ``DocumentField`` and probably will work wrong.
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+    TokenObtainPair:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - refresh
+    TokenObtainPairRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+      required:
+      - access
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - refresh
+    User:
+      type: object
+      description: |-
+        Serializer for Documents.
+
+        Recognized primitve fields:
+
+            * ``StringField``
+            * ``URLField``
+            * ``EmailField``
+            * ``IntField``
+            * ``LongField``
+            * ``FloatField``
+            * ``DecimalField``
+            * ``BooleanField``
+            * ``DateTimeField``
+            * ``ComplexDateTimeField``
+            * ``ObjectIdField``
+            * ``SequenceField`` (assumes it has integer counter)
+            * ``UUIDField``
+            * ``GeoPointField``
+            * ``GeoJsonBaseField`` (all those fields)
+            * ``DateField``
+
+        Compound fields: ``ListField`` and ``DictField`` are mapped to corresponding DRF fields, with respect to nested field specification.
+
+        The ``ReferenceField`` is handled like ``ForeignKey`` in DRF: there nested serializer autogenerated if serializer depth greater then 0, otherwise it's handled by it's own (results as ``str(id)``).
+
+        For ``EmbeddedDocumentField`` also nested serializer autogenerated for non-zero depth, otherwise it is skipped. TODO: THIS IS PROBABLY WRONG AND SHOULD BE FIXED.
+
+        Generic fields ``GenericReferenceField`` and ``GenericEmbeddedDocumentField`` are handled by their own with corresponding serializer fields.
+
+        Not well supported or untested:
+
+            ``FileField``
+            ``ImageField``
+            ``BinaryField``
+
+        All other fields are mapped to ``DocumentField`` and probably will work wrong.
+      properties:
+        id:
+          type: string
+          readOnly: true
+        username:
+          type: string
+        password:
+          type: string
+      required:
+      - id
+      - password
+      - username
+    UserRequest:
+      type: object
+      description: |-
+        Serializer for Documents.
+
+        Recognized primitve fields:
+
+            * ``StringField``
+            * ``URLField``
+            * ``EmailField``
+            * ``IntField``
+            * ``LongField``
+            * ``FloatField``
+            * ``DecimalField``
+            * ``BooleanField``
+            * ``DateTimeField``
+            * ``ComplexDateTimeField``
+            * ``ObjectIdField``
+            * ``SequenceField`` (assumes it has integer counter)
+            * ``UUIDField``
+            * ``GeoPointField``
+            * ``GeoJsonBaseField`` (all those fields)
+            * ``DateField``
+
+        Compound fields: ``ListField`` and ``DictField`` are mapped to corresponding DRF fields, with respect to nested field specification.
+
+        The ``ReferenceField`` is handled like ``ForeignKey`` in DRF: there nested serializer autogenerated if serializer depth greater then 0, otherwise it's handled by it's own (results as ``str(id)``).
+
+        For ``EmbeddedDocumentField`` also nested serializer autogenerated for non-zero depth, otherwise it is skipped. TODO: THIS IS PROBABLY WRONG AND SHOULD BE FIXED.
+
+        Generic fields ``GenericReferenceField`` and ``GenericEmbeddedDocumentField`` are handled by their own with corresponding serializer fields.
+
+        Not well supported or untested:
+
+            ``FileField``
+            ``ImageField``
+            ``BinaryField``
+
+        All other fields are mapped to ``DocumentField`` and probably will work wrong.
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+      required:
+      - password
+      - username
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

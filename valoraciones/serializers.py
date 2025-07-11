@@ -26,3 +26,34 @@ class PHQ9AssessmentSerializer(DocumentSerializer):
                 raise serializers.ValidationError(f"La respuesta {i+1} debe estar entre 0 y 3")
         
         return value
+
+
+class AnalyzeAssessmentSerializer(serializers.Serializer):
+    """
+    Serializer para los parámetros de análisis individual de PHQ-9
+    """
+    assessment_id = serializers.UUIDField(required=True, help_text="ID de la valoración PHQ-9 a analizar")
+    
+    def validate_assessment_id(self, value):
+        """Validar que la valoración existe"""
+        if not PHQ9Assessment.objects(id=value).first():
+            raise serializers.ValidationError("La valoración PHQ-9 especificada no existe")
+        return value
+
+
+class AnalyzeTrendsSerializer(serializers.Serializer):
+    """
+    Serializer para los parámetros de análisis de tendencias
+    """
+    patient_id = serializers.UUIDField(required=True, help_text="ID del paciente para análisis de tendencias")
+    
+    def validate_patient_id(self, value):
+        """Validar que el paciente existe y tiene valoraciones"""
+        if not Paciente.objects(id=value).first():
+            raise serializers.ValidationError("El paciente especificado no existe")
+        
+        # Verificar que el paciente tiene valoraciones
+        if not PHQ9Assessment.objects(patient_id=value).first():
+            raise serializers.ValidationError("No se encontraron valoraciones para este paciente")
+        
+        return value

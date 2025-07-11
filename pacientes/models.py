@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, DateField, UUIDField
+from mongoengine import Document, StringField, DateField, DateTimeField, UUIDField
 import uuid
 from datetime import datetime
 
@@ -8,7 +8,7 @@ class Paciente(Document):
     apellido = StringField(required=True, max_length=100)
     identificacion = StringField(required=True, unique=True, max_length=20)
     fecha_nacimiento = DateField(required=True)
-    fecha_creacion = DateField(default=datetime.now)
+    fecha_creacion = DateTimeField(default=datetime.now)
 
     meta = {
         'indexes': ['identificacion'],

@@ -1,0 +1,15 @@
+# Reportes generados
+reports/allure-results/
+reports/allure-report/
+reports/junit/
+
+# Archivos temporales de behave
+.behave_markers
+
+# Logs
+*.log
+
+# Cache de Python
+__pycache__/
+*.pyc
+*.pyo

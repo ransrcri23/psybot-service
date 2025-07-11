@@ -1,0 +1,1 @@
+{"total":2,"items":[{"uid":"1a5fd54e452b5facca9badee95880d56","name":"Gestión de Valoraciones PHQ-9","statistic":{"failed":5,"broken":0,"skipped":0,"passed":8,"unknown":0,"total":13}},{"uid":"d0c4945b65a45851f0c1e4fb76c08877","name":"Gestión de Pacientes","statistic":{"failed":1,"broken":0,"skipped":0,"passed":7,"unknown":0,"total":8}}]}

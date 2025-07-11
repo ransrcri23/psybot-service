@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'accounts',
     'valoraciones',
+    'pacientes',
 ]
 
 MIDDLEWARE = [

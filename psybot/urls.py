@@ -25,6 +25,7 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView
 )
+from psybot.views.gemini_test import test_gemini_configuration, test_gemini_chat
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,4 +44,10 @@ urlpatterns += [
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+]
+
+# Gemini AI test endpoints
+urlpatterns += [
+    path('api/gemini/test/', test_gemini_configuration, name='test_gemini_configuration'),
+    path('api/gemini/chat/', test_gemini_chat, name='test_gemini_chat'),
 ]

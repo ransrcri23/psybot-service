@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Pacientes | PsyBot{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Gestión de Pacientes</h2>
+    <p class="text-muted">Crear y gestionar pacientes del sistema</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-person-plus me-2"></i>Crear Nuevo Paciente
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre *</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="apellido" class="form-label">Apellido *</label>
+                        <input type="text" class="form-control" id="apellido" name="apellido" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="identificacion" class="form-label">Identificación *</label>
+                        <input type="text" class="form-control" id="identificacion" name="identificacion" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento *</label>
+                        <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-save me-2"></i>Crear Paciente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-people me-2"></i>Lista de Pacientes
+            </div>
+            <div class="card-body">
+                {% if pacientes %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Identificación</th>
+                                    <th>Fecha Nacimiento</th>
+                                    <th>Fecha Creación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for paciente in pacientes %}
+                                <tr>
+                                    <td>{{ paciente.nombre }}</td>
+                                    <td>{{ paciente.apellido }}</td>
+                                    <td>{{ paciente.identificacion }}</td>
+                                    <td>{{ paciente.fecha_nacimiento|date:"d/m/Y" }}</td>
+                                    <td>{{ paciente.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+                        <h5 class="text-muted mt-3">No hay pacientes registrados</h5>
+                        <p class="text-muted">Crea tu primer paciente usando el formulario de la izquierda</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

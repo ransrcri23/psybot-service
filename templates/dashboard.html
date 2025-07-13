@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | PsyBot{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Dashboard</h2>
+    <p class="text-muted">Resumen general del sistema</p>
+</div>
+
+<!-- Estadísticas -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="stat-card p-4 text-center">
+            <h2 class="text-primary mb-2">{{ total_pacientes }}</h2>
+            <h5 class="mb-0">Total de Pacientes</h5>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="stat-card p-4 text-center">
+            <h2 class="text-primary mb-2">{{ total_valoraciones }}</h2>
+            <h5 class="mb-0">Total de Valoraciones</h5>
+        </div>
+    </div>
+</div>
+
+<!-- Navegación Rápida -->
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center d-flex flex-column">
+                <i class="bi bi-people text-primary mb-3" style="font-size: 3rem;"></i>
+                <h5 class="card-title">Gestión de Pacientes</h5>
+                <p class="card-text text-muted flex-grow-1">Crear, ver y gestionar pacientes del sistema</p>
+                <a href="{% url 'pacientes' %}" class="btn btn-primary">
+                    <i class="bi bi-arrow-right me-2"></i>Ir a Pacientes
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center d-flex flex-column">
+                <i class="bi bi-clipboard-heart text-primary mb-3" style="font-size: 3rem;"></i>
+                <h5 class="card-title">Valoraciones PHQ-9</h5>
+                <p class="card-text text-muted flex-grow-1">Realizar y gestionar valoraciones psicológicas</p>
+                <a href="{% url 'valoraciones' %}" class="btn btn-primary">
+                    <i class="bi bi-arrow-right me-2"></i>Ir a Valoraciones
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center d-flex flex-column">
+                <i class="bi bi-graph-up text-primary mb-3" style="font-size: 3rem;"></i>
+                <h5 class="card-title">Análisis con IA</h5>
+                <p class="card-text text-muted flex-grow-1">Generar análisis clínicos con Gemini AI</p>
+                <a href="{% url 'analisis' %}" class="btn btn-primary">
+                    <i class="bi bi-arrow-right me-2"></i>Ir a Análisis
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

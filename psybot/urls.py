@@ -32,6 +32,8 @@ urlpatterns = [
     path('api/', include('accounts.urls')),
     path('api/', include('valoraciones.urls')),
     path('api/', include('pacientes.urls')),
+    # Interfaz web
+    path('', include('web_urls')),
 ]
 
 urlpatterns += [

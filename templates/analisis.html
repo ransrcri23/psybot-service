@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block title %}Análisis con Gemini AI | PsyBot{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Análisis con Gemini AI</h2>
+    <p class="text-muted">Generar análisis clínicos y análisis de tendencias usando inteligencia artificial</p>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-graph-up-arrow me-2"></i>Análisis Individual de Valoración
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Analiza una valoración PHQ-9 específica para obtener insights clínicos detallados.</p>
+                
+                <div class="mb-3">
+                    <label for="paciente_individual" class="form-label">Seleccionar Paciente</label>
+                    <select class="form-select" id="paciente_individual">
+                        <option value="">Seleccione un paciente</option>
+                        {% for paciente in pacientes %}
+                            <option value="{{ paciente.id }}">{{ paciente.nombre }} {{ paciente.apellido }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="valoracion_individual" class="form-label">Seleccionar Valoración</label>
+                    <select class="form-select" id="valoracion_individual" disabled>
+                        <option value="">Primero seleccione un paciente</option>
+                    </select>
+                </div>
+
+                <button type="button" class="btn btn-primary w-100" onclick="generarAnalisisIndividual()">
+                    <i class="bi bi-cpu me-2"></i>Generar Análisis Individual
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-graph-up me-2"></i>Análisis de Tendencias
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Analiza múltiples valoraciones de un paciente para identificar patrones y tendencias.</p>
+                
+                <div class="mb-3">
+                    <label for="paciente_tendencias" class="form-label">Seleccionar Paciente</label>
+                    <select class="form-select" id="paciente_tendencias">
+                        <option value="">Seleccione un paciente</option>
+                        {% for paciente in pacientes %}
+                            <option value="{{ paciente.id }}">{{ paciente.nombre }} {{ paciente.apellido }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="button" class="btn btn-primary w-100" onclick="generarAnalisisTendencias()">
+                    <i class="bi bi-cpu me-2"></i>Generar Análisis de Tendencias
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Spinner -->
+<div id="loading" class="loading">
+    <div class="spinner-border spinner-border-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2 text-muted">Generando análisis con Gemini AI...</p>
+</div>
+
+<!-- Resultados del Análisis -->
+<div id="resultados" class="mt-4" style="display: none;">
+    <div class="card">
+        <div class="card-header">
+            <i class="bi bi-lightbulb me-2"></i>Resultados del Análisis
+        </div>
+        <div class="card-body">
+            <div id="contenido-resultados"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Cargar valoraciones cuando se selecciona un paciente
+    document.getElementById('paciente_individual').addEventListener('change', function() {
+        const pacienteId = this.value;
+        const valoracionSelect = document.getElementById('valoracion_individual');
+        
+        if (pacienteId) {
+            fetch(`/api/valoraciones-paciente/${pacienteId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    valoracionSelect.innerHTML = '<option value="">Seleccione una valoración</option>';
+                    data.valoraciones.forEach(valoracion => {
+                        const option = document.createElement('option');
+                        option.value = valoracion.id;
+                        option.textContent = `${valoracion.fecha} - Puntuación: ${valoracion.total_score}/27`;
+                        valoracionSelect.appendChild(option);
+                    });
+                    valoracionSelect.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al cargar las valoraciones');
+                });
+        } else {
+            valoracionSelect.innerHTML = '<option value="">Primero seleccione un paciente</option>';
+            valoracionSelect.disabled = true;
+        }
+    });
+
+    function generarAnalisisIndividual() {
+        const valoracionId = document.getElementById('valoracion_individual').value;
+        
+        if (!valoracionId) {
+            alert('Por favor seleccione una valoración');
+            return;
+        }
+
+        mostrarLoading();
+
+        const formData = new FormData();
+        formData.append('valoracion_id', valoracionId);
+        formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+        fetch('/analisis/individual/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            ocultarLoading();
+            
+            if (data.success) {
+                mostrarResultadosIndividual(data);
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            ocultarLoading();
+            console.error('Error:', error);
+            alert('Error al generar el análisis');
+        });
+    }
+
+    function generarAnalisisTendencias() {
+        const pacienteId = document.getElementById('paciente_tendencias').value;
+        
+        if (!pacienteId) {
+            alert('Por favor seleccione un paciente');
+            return;
+        }
+
+        mostrarLoading();
+
+        const formData = new FormData();
+        formData.append('patient_id', pacienteId);
+        formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+        fetch('/analisis/tendencias/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            ocultarLoading();
+            
+            if (data.success) {
+                mostrarResultadosTendencias(data);
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            ocultarLoading();
+            console.error('Error:', error);
+            alert('Error al generar el análisis');
+        });
+    }
+
+    function mostrarResultadosIndividual(data) {
+        const contenido = `
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5 class="text-primary">Información del Paciente</h5>
+                    <p><strong>Nombre:</strong> ${data.paciente}</p>
+                    <p><strong>Fecha de Valoración:</strong> ${data.valoracion.fecha}</p>
+                    <p><strong>Puntuación Total:</strong> ${data.valoracion.total_score}/27</p>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="text-primary">Respuestas PHQ-9</h5>
+                    <p><strong>Respuestas:</strong> [${data.valoracion.responses.join(', ')}]</p>
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <h5><i class="bi bi-lightbulb me-2"></i>Análisis Clínico con Gemini AI</h5>
+                <div style="white-space: pre-wrap;">${data.analisis}</div>
+            </div>
+        `;
+        
+        document.getElementById('contenido-resultados').innerHTML = contenido;
+        document.getElementById('resultados').style.display = 'block';
+    }
+
+    function mostrarResultadosTendencias(data) {
+        const contenido = `
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5 class="text-primary">Información del Paciente</h5>
+                    <p><strong>Nombre:</strong> ${data.paciente}</p>
+                    <p><strong>Total de Valoraciones:</strong> ${data.total_valoraciones}</p>
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <h5><i class="bi bi-graph-up me-2"></i>Análisis de Tendencias con Gemini AI</h5>
+                <div style="white-space: pre-wrap;">${data.analisis}</div>
+            </div>
+        `;
+        
+        document.getElementById('contenido-resultados').innerHTML = contenido;
+        document.getElementById('resultados').style.display = 'block';
+    }
+
+    function mostrarLoading() {
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('resultados').style.display = 'none';
+    }
+
+    function ocultarLoading() {
+        document.getElementById('loading').style.display = 'none';
+    }
+
+    // Agregar token CSRF al DOM
+    document.addEventListener('DOMContentLoaded', function() {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (!csrfToken) {
+            const form = document.createElement('form');
+            form.innerHTML = '{% csrf_token %}';
+            form.style.display = 'none';
+            document.body.appendChild(form);
+        }
+    });
+</script>
+{% endblock %}

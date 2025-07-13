@@ -7,6 +7,13 @@ services:
       - "8000:8000"
     volumes:
       - ..:/app
+    environment:
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+      - MONGO_DB_NAME=psybot_db
+      - DEBUG=True
+    env_file:
+      - ../.env
     depends_on:
       - mongo
 

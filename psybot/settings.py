@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-p%5=#d2d0g%wmxy1j^%s#@887g&9o+x*l^t*frj9s1-xkb3j#a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
 
 # Application definition
@@ -66,7 +66,7 @@ ROOT_URLCONF = 'psybot.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -164,15 +164,22 @@ SPECTACULAR_SETTINGS = {
 # ]
 
 # For development, you might want to allow all origins (NOT recommended for production)
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 from mongoengine import connect
 
-connect(
-    db='psybot_db',
-    host='mongo',  # Docker service name
-    port=27017
-)
+# MongoDB connection - adaptable para Docker y desarrollo local
+# En Docker, el servicio se llama 'mongo', en local es 'localhost'
+MONGO_HOST = os.getenv('MONGO_HOST', 'mongo')
+MONGO_PORT = int(os.getenv('MONGO_PORT', '27017'))
+MONGO_DB_NAME = os.getenv('MONGO_DB_NAME', 'psybot_db')
+
+# Configurar conexión MongoDB
+try:
+    connect(db=MONGO_DB_NAME, host=MONGO_HOST, port=MONGO_PORT)
+    print(f"✅ Conectado a MongoDB: {MONGO_HOST}:{MONGO_PORT}/{MONGO_DB_NAME}")
+except Exception as e:
+    print(f"❌ Error conectando a MongoDB: {e}")
 
 # Gemini AI Configuration
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')

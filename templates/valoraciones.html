@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Valoraciones PHQ-9 | PsyBot{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Gestión de Valoraciones PHQ-9</h2>
+    <p class="text-muted">Crear y gestionar valoraciones del cuestionario PHQ-9</p>
+</div>
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-clipboard-heart me-2"></i>Crear Nueva Valoración PHQ-9
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="patient_id" class="form-label">Paciente *</label>
+                        <select class="form-select" id="patient_id" name="patient_id" required>
+                            <option value="">Seleccione un paciente</option>
+                            {% for paciente in pacientes %}
+                                <option value="{{ paciente.id }}">{{ paciente.nombre }} {{ paciente.apellido }} - {{ paciente.identificacion }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6>Preguntas PHQ-9</h6>
+                        <small class="text-muted">Seleccione la frecuencia de cada síntoma en las últimas 2 semanas:</small>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <strong>0:</strong> Nada en absoluto | 
+                                <strong>1:</strong> Varios días | 
+                                <strong>2:</strong> Más de la mitad de los días | 
+                                <strong>3:</strong> Casi todos los días
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Preguntas PHQ-9 -->
+                    <div class="mb-3">
+                        <label class="form-label">1. Poco interés o placer en hacer cosas</label>
+                        <select class="form-select" name="respuesta_1" required>
+                            <option value="">Seleccione</option>
+                            <option value="0">0 - Nada en absoluto</option>
+                            <option value="1">1 - Varios días</option>
+                            <option value="2">2 - Más de la mitad de los días</option>
+                            <option value="3">3 - Casi todos los días</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">2. Sentirse deprimido, desanimado o sin esperanza</label>
+                        <select class="form-select" name="respuesta_2" required>
+                            <option value="">Seleccione</option>
+                            <option value="0">0 - Nada en absoluto</option>
+                            <option value="1">1 - Varios días</option>
+                            <option value="2">2 - Más de la mitad de los días</option>
+                            <option value="3">3 - Casi todos los días</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">3. Problemas para dormir o dormir demasiado</label>
+                        <select class="form-select" name="respuesta_3" required>
+                            <option value="">Seleccione</option>
+                            <option value="0">0 - Nada en absoluto</option>
+                            <option value="1">1 - Varios días</option>
+                            <option value="2">2 - Más de la mitad de los días</option>
+                            <option value="3">3 - Casi todos los días</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">4. Sentirse cansado o tener poca energía</label>
+                        <select class="form-select" name="respuesta_4" required>
+                            <option value="">Seleccione</option>
+                            <option value="0">0 - Nada en absoluto</option>
+                            <option value="1">1 - Varios días</option>
+                            <option value="2">2 - Más de la mitad de los días</option>
+                            <option value="3">3 - Casi todos los días</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">5. Poco apetito o comer en exceso</label>
+                        <select class="form-select" name="respuesta_5" required>
+                            <option value="">Seleccione</option>
+                            <option value="0">0 - Nada en absoluto</option>
+                            <option value="1">1 - Varios días</option>
+                            <option value="2">2 - Más de la mitad de los días</option>
+                            <option value="3">3 - Casi todos los días</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">6. Sentirse mal consigo mismo</label>
+                        <select class="form-select" name="respuesta_6" required>
+                            <option value="">Seleccione</option>
+                            <option value="0">0 - Nada en absoluto</option>
+                            <option value="1">1 - Varios días</option>
+                            <option value="2">2 - Más de la mitad de los días</option>
+                            <option value="3">3 - Casi todos los días</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">7. Problemas para concentrarse</label>
+                        <select class="form-select" name="respuesta_7" required>
+                            <option value="">Seleccione</option>
+                            <option value="0">0 - Nada en absoluto</option>
+                            <option value="1">1 - Varios días</option>
+                            <option value="2">2 - Más de la mitad de los días</option>
+                            <option value="3">3 - Casi todos los días</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">8. Moverse o hablar lentamente</label>
+                        <select class="form-select" name="respuesta_8" required>
+                            <option value="">Seleccione</option>
+                            <option value="0">0 - Nada en absoluto</option>
+                            <option value="1">1 - Varios días</option>
+                            <option value="2">2 - Más de la mitad de los días</option>
+                            <option value="3">3 - Casi todos los días</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">9. Pensamientos de autolesión</label>
+                        <select class="form-select" name="respuesta_9" required>
+                            <option value="">Seleccione</option>
+                            <option value="0">0 - Nada en absoluto</option>
+                            <option value="1">1 - Varios días</option>
+                            <option value="2">2 - Más de la mitad de los días</option>
+                            <option value="3">3 - Casi todos los días</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-save me-2"></i>Crear Valoración
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-list-task me-2"></i>Valoraciones Registradas
+            </div>
+            <div class="card-body">
+                {% if valoraciones %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Paciente</th>
+                                    <th>Puntuación Total</th>
+                                    <th>Severidad</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for valoracion in valoraciones %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ valoracion.paciente_nombre }}</strong><br>
+                                        <small class="text-muted">ID: {{ valoracion.paciente_identificacion }}</small>
+                                    </td>
+                                    <td>{{ valoracion.total_score }}/27</td>
+                                    <td>
+                                        {% if valoracion.total_score <= 4 %}
+                                            <span class="badge bg-success">Mínima</span>
+                                        {% elif valoracion.total_score <= 9 %}
+                                            <span class="badge bg-warning">Leve</span>
+                                        {% elif valoracion.total_score <= 14 %}
+                                            <span class="badge bg-warning">Moderada</span>
+                                        {% elif valoracion.total_score <= 19 %}
+                                            <span class="badge bg-danger">Moderadamente Severa</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Severa</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ valoracion.date_created|date:"d/m/Y H:i" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-clipboard-heart text-muted" style="font-size: 3rem;"></i>
+                        <h5 class="text-muted mt-3">No hay valoraciones registradas</h5>
+                        <p class="text-muted">Crea tu primera valoración PHQ-9 usando el formulario de la izquierda</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

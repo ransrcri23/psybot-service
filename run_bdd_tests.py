@@ -33,11 +33,11 @@ def run_behave_tests(tags=None, feature=None):
         "python", "-m", "behave",
         "tests/bdd/features/",
         "--format", "allure_behave.formatter:AllureFormatter",
-        "--outdir", "tests/bdd/reports/allure-results",
         "--format", "junit",
         "--junit-directory", "tests/bdd/reports/junit",
         "--no-capture",
-        "--no-capture-stderr"
+        "--no-capture-stderr",
+        "-D", "allure_report_dir=tests/bdd/reports/allure-results"
     ]
     
     # Agregar filtros si se especifican

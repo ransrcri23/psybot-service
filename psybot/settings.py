@@ -157,9 +157,14 @@ SPECTACULAR_SETTINGS = {
     ],
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React frontend
-]
+# CORS configuration for API access
+# If you need to allow specific origins for API access, uncomment and configure:
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8080",  # Example: if you add a frontend later
+# ]
+
+# For development, you might want to allow all origins (NOT recommended for production)
+# CORS_ALLOW_ALL_ORIGINS = True
 
 from mongoengine import connect
 

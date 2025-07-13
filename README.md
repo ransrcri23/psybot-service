@@ -114,7 +114,7 @@ The application uses the following environment variables (see `.env.example`):
 - `ALLOWED_HOSTS`: Comma-separated list of allowed hosts
 - `MONGO_DB_NAME`: MongoDB database name
 - `MONGO_HOST`: MongoDB connection string
-- `CORS_ALLOWED_ORIGINS`: Allowed CORS origins
+- `CORS_ALLOWED_ORIGINS`: Allowed CORS origins (optional - for frontend integration)
 - `JWT_SECRET_KEY`: JWT token secret
 - Email configuration variables (if using email features)
 

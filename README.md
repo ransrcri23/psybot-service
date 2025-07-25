@@ -155,13 +155,39 @@ Once the application is running, you can explore the API using:
   - `PUT /api/users/{id}/` - Update user
   - `DELETE /api/users/{id}/` - Delete user
 
+## 🧪 Automated Testing
+
+### Running Tests Locally
+```bash
+# Make sure Docker is running first
+cd psybot && docker-compose up -d && cd ..
+
+# Run automated tests
+python run_tests.py
+```
+
+### Test Coverage
+The project includes automated tests for:
+- ✅ **Patient Creation** - Validates patient model and database operations
+- ✅ **PHQ-9 Assessments** - Tests assessment creation and validation
+- ✅ **AI Analysis** - Mocked Gemini AI integration testing
+- ✅ **Trend Analysis** - Multi-assessment trend detection
+
+### Continuous Integration
+GitHub Actions automatically runs all tests on:
+- Push to `main`, `develop`, or `Reto6` branches
+- Pull requests to `main` or `develop`
+
+Tests include MongoDB integration and mocked external services.
+
 ## Contributing
 
 1. Make sure Docker is running
 2. Follow the Quick Start guide
 3. Make your changes
-4. Test with `docker-compose up --build`
-5. Submit your pull request
+4. Run tests locally: `python run_tests.py`
+5. Test with `docker-compose up --build`
+6. Submit your pull request
 
 ## Support
 

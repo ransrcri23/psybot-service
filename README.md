@@ -1,6 +1,13 @@
 # psybot-service
 
+![Tests](https://github.com/maxterdize/psybot-service/workflows/Automated%20Tests/badge.svg)
+![Python](https://img.shields.io/badge/python-3.11-blue)
+![Django](https://img.shields.io/badge/django-5.2-green)
+![MongoDB](https://img.shields.io/badge/database-mongodb-brightgreen)
+
 Python Backend Service for PsyBot App - A Django REST API with MongoDB integration.
+
+**✅ Automated Testing Enabled** - All pushes to main/develop are automatically tested with GitHub Actions.
 
 ## Prerequisites
 

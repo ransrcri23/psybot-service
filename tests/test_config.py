@@ -7,11 +7,17 @@ from pathlib import Path
 
 # Configurar variables de entorno para testing ANTES de cualquier import
 os.environ['DJANGO_SETTINGS_MODULE'] = 'psybot.settings'
-os.environ['MONGO_HOST'] = 'localhost'
-os.environ['MONGO_PORT'] = '27017'
-os.environ['MONGO_DB_NAME'] = 'psybot_test_db'
-os.environ['SECRET_KEY'] = 'test-secret-key-for-local-testing'
-os.environ['DEBUG'] = 'True'
+
+# Usar variables de entorno si están disponibles (CI), sino defaults locales
+os.environ.setdefault('MONGO_HOST', 'localhost')
+os.environ.setdefault('MONGO_PORT', '27017')
+os.environ.setdefault('MONGO_DB_NAME', 'psybot_test_db')
+os.environ.setdefault('SECRET_KEY', 'test-secret-key-for-local-testing')
+os.environ.setdefault('DEBUG', 'True')
+os.environ.setdefault('GEMINI_API_KEY', 'fake-key-for-testing')
+os.environ.setdefault('GEMINI_MODEL', 'gemini-1.5-flash')
+os.environ.setdefault('GEMINI_TEMPERATURE', '0.7')
+os.environ.setdefault('GEMINI_MAX_TOKENS', '1000')
 
 # Agregar el directorio raíz al path
 project_root = Path(__file__).parent.parent

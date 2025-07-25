@@ -45,14 +45,26 @@ jobs:
     - name: Set up environment variables
       run: |
         echo "DJANGO_SETTINGS_MODULE=psybot.settings" >> $GITHUB_ENV
-        echo "MONGODB_HOST=localhost" >> $GITHUB_ENV
-        echo "MONGODB_PORT=27017" >> $GITHUB_ENV
+        echo "MONGO_HOST=mongo" >> $GITHUB_ENV
+        echo "MONGO_PORT=27017" >> $GITHUB_ENV
+        echo "MONGO_DB_NAME=psybot_test_db" >> $GITHUB_ENV
         echo "SECRET_KEY=test-secret-key-for-github-actions" >> $GITHUB_ENV
         echo "DEBUG=True" >> $GITHUB_ENV
         echo "GEMINI_API_KEY=fake-key-for-testing" >> $GITHUB_ENV
         echo "GEMINI_MODEL=gemini-1.5-flash" >> $GITHUB_ENV
         echo "GEMINI_TEMPERATURE=0.7" >> $GITHUB_ENV
         echo "GEMINI_MAX_TOKENS=1000" >> $GITHUB_ENV
+    
+    - name: Wait for MongoDB to be ready
+      run: |
+        for i in $(seq 1 30); do
+          if nc -z mongo 27017; then
+            echo "MongoDB is ready!"
+            break
+          fi
+          echo "Waiting for MongoDB... ($i/30)"
+          sleep 2
+        done
     
     - name: Run Django migrations
       run: |

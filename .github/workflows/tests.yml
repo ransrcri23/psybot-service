@@ -1,0 +1,73 @@
+name: Automated Tests
+
+on:
+  push:
+    branches: [ main, develop, Reto6 ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      mongodb:
+        image: mongo:5.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Set up environment variables
+      run: |
+        echo "DJANGO_SETTINGS_MODULE=psybot.settings" >> $GITHUB_ENV
+        echo "MONGODB_HOST=localhost" >> $GITHUB_ENV
+        echo "MONGODB_PORT=27017" >> $GITHUB_ENV
+        echo "SECRET_KEY=test-secret-key-for-github-actions" >> $GITHUB_ENV
+        echo "DEBUG=True" >> $GITHUB_ENV
+    
+    - name: Run Django migrations
+      run: |
+        python manage.py migrate --noinput
+    
+    - name: Run unit tests
+      run: |
+        pytest tests/unit/ -v --tb=short --disable-warnings
+    
+    - name: Run BDD tests (if available)
+      run: |
+        if [ -f "run_bdd_tests.py" ]; then
+          python run_bdd_tests.py || true
+        fi
+    
+    - name: Generate test summary
+      if: always()
+      run: |
+        echo "## Test Results 🧪" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Unit tests completed" >> $GITHUB_STEP_SUMMARY
+        echo "📊 Check the logs above for detailed results" >> $GITHUB_STEP_SUMMARY

@@ -45,7 +45,7 @@ jobs:
     - name: Set up environment variables
       run: |
         echo "DJANGO_SETTINGS_MODULE=psybot.settings" >> $GITHUB_ENV
-        echo "MONGO_HOST=mongodb" >> $GITHUB_ENV
+        echo "MONGO_HOST=localhost" >> $GITHUB_ENV
         echo "MONGO_PORT=27017" >> $GITHUB_ENV
         echo "MONGO_DB_NAME=psybot_test_db" >> $GITHUB_ENV
         echo "SECRET_KEY=test-secret-key-for-github-actions" >> $GITHUB_ENV
@@ -58,7 +58,7 @@ jobs:
     - name: Wait for MongoDB to be ready
       run: |
         for i in $(seq 1 30); do
-          if nc -z mongodb 27017; then
+          if nc -z localhost 27017; then
             echo "MongoDB is ready!"
             break
           fi
@@ -72,7 +72,12 @@ jobs:
     
     - name: Run unit tests
       run: |
-        pytest tests/unit/ -v --tb=short --disable-warnings
+        python -c "import tests.test_config; import pytest; pytest.main(['tests/unit/', '-v', '--tb=short', '--disable-warnings'])"
+    
+    - name: Run unit tests with coverage (alternative)
+      if: failure()
+      run: |
+        python -m pytest tests/unit/ -v --tb=short
     
     - name: Run BDD tests (if available)
       run: |

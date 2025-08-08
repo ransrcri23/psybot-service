@@ -23,6 +23,8 @@ SOURCE_CODE_PATH = Path(__file__).parent
 WIKI_PATH = Path(r"C:\Users\sanch\Projects\DEV\Cenfotec\BE\Quarto\quarto_construccion_mantenimiento")
 LOGS_FILE = WIKI_PATH / "reto7" / "logs.qmd"
 
+# Sistema configurado para trabajar solo con remoto 'personal'
+
 def get_git_info():
     """
     Obtiene información del último commit

@@ -177,9 +177,9 @@ MONGO_DB_NAME = os.getenv('MONGO_DB_NAME', 'psybot_db')
 # Configurar conexión MongoDB
 try:
     connect(db=MONGO_DB_NAME, host=MONGO_HOST, port=MONGO_PORT)
-    print(f"✅ Conectado a MongoDB: {MONGO_HOST}:{MONGO_PORT}/{MONGO_DB_NAME}")
+    print(f"Conectado a MongoDB: {MONGO_HOST}:{MONGO_PORT}/{MONGO_DB_NAME}")
 except Exception as e:
-    print(f"❌ Error conectando a MongoDB: {e}")
+    print(f"Error conectando a MongoDB: {e}")
 
 # Gemini AI Configuration
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')

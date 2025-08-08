@@ -71,7 +71,9 @@ def get_git_info():
             diff_content = subprocess.check_output(
                 ["git", "diff", "HEAD~1", "HEAD"],
                 cwd=SOURCE_CODE_PATH,
-                text=True
+                text=True,
+                encoding='utf-8',
+                errors='replace'
             ).strip()
         except subprocess.CalledProcessError:
             # Si es el primer commit

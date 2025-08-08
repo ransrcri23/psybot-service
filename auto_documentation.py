@@ -206,10 +206,77 @@ def update_wiki_logs(git_info, ai_description):
             f.write(updated_content)
         
         print(f"Wiki actualizado exitosamente: {LOGS_FILE}")
+        
+        # Hacer commit y push automático del wiki
+        wiki_commit_success = commit_and_push_wiki_changes(git_info)
+        
         return True
         
     except Exception as e:
         print(f"Error actualizando el wiki: {e}")
+        return False
+
+def commit_and_push_wiki_changes(git_info):
+    """
+    Hace commit y push automático de los cambios en el repositorio del wiki
+    Flujo: quarto render → git add . → git commit → git push
+    """
+    try:
+        print("Procesando wiki: quarto render + git commit + push...")
+        
+        # Cambiar al directorio del wiki
+        wiki_dir = WIKI_PATH
+        
+        # Paso 1: Ejecutar quarto render
+        print("   Ejecutando quarto render...")
+        subprocess.run(
+            ["quarto", "render"],
+            cwd=wiki_dir,
+            check=True,
+            capture_output=True
+        )
+        
+        # Paso 2: Agregar todos los archivos (incluyendo los generados)
+        print("   Agregando archivos con git add .")
+        subprocess.run(
+            ["git", "add", "."],
+            cwd=wiki_dir,
+            check=True,
+            capture_output=True
+        )
+        
+        # Paso 3: Crear mensaje de commit descriptivo
+        commit_message = f"Documentación automática: {git_info['commit_hash']} por {git_info['author']}"
+        
+        # Paso 4: Hacer commit
+        print("   Haciendo commit...")
+        subprocess.run(
+            ["git", "commit", "-m", commit_message],
+            cwd=wiki_dir,
+            check=True,
+            capture_output=True
+        )
+        
+        # Paso 5: Hacer push al repositorio del wiki
+        print("   Haciendo push...")
+        subprocess.run(
+            ["git", "push"],
+            cwd=wiki_dir,
+            check=True,
+            capture_output=True
+        )
+        
+        print(f"Wiki procesado y pusheado exitosamente: {commit_message}")
+        return True
+        
+    except subprocess.CalledProcessError as e:
+        print(f"Error en procesamiento del wiki: {e}")
+        # Intentar mostrar el stderr si está disponible
+        if hasattr(e, 'stderr') and e.stderr:
+            print(f"Error details: {e.stderr.decode('utf-8', errors='replace')}")
+        return False
+    except Exception as e:
+        print(f"Error inesperado en wiki: {e}")
         return False
 
 def main():

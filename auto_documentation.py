@@ -98,9 +98,20 @@ def analyze_changes_with_gemini(git_info):
     Analiza los cambios usando Gemini AI con límite de 300 caracteres
     """
     try:
-        # Configurar Django antes de importar
+        # Intentar configurar Django de manera más robusta
         sys.path.append(str(SOURCE_CODE_PATH))
         os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'psybot.settings')
+        
+        # Configurar variables de entorno manualmente si es necesario
+        env_file = SOURCE_CODE_PATH / '.env'
+        if env_file.exists():
+            with open(env_file, 'r') as f:
+                for line in f:
+                    if '=' in line and not line.startswith('#'):
+                        key, value = line.strip().split('=', 1)
+                        os.environ.setdefault(key, value)
+        
+        # Importar Django y configurar
         import django
         django.setup()
         

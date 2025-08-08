@@ -120,7 +120,7 @@ def analyze_changes_with_gemini(git_info):
         
         # Preparar el prompt para Gemini
         prompt = f"""
-        Analiza los siguientes cambios de código y proporciona una descripción técnica MÁXIMO 300 caracteres:
+        Analiza los siguientes cambios de código y escribe una descripción técnica completa:
 
         COMMIT: {git_info['commit_message']}
         ARCHIVOS MODIFICADOS: {', '.join(git_info['changed_files'][:5])}
@@ -128,11 +128,14 @@ def analyze_changes_with_gemini(git_info):
         DIFERENCIAS:
         {git_info['diff_content'][:1500]}
 
-        Requisitos:
-        - Descripción técnica concisa
-        - MÁXIMO 300 caracteres
+        REQUISITOS CRÍTICOS:
+        - Descripción técnica concisa y COMPLETA
+        - MÁXIMO 280 caracteres (deja margen para completar frases)
+        - NO cortar frases a la mitad
+        - Terminar con puntuación adecuada
         - Sin encabezados ni formato adicional
         - Explica qué se cambió y por qué
+        - Si necesitas más espacio, usa frases más cortas pero completas
         """
         
         # Llamar a Gemini
@@ -145,9 +148,34 @@ def analyze_changes_with_gemini(git_info):
             description = re.sub(r'\n+', ' ', description)
             description = description.replace('|', '\\|')  # Escapar pipes para markdown
             
-            # Limitar estrictamente a 300 caracteres
+            # Limitar de manera inteligente a 300 caracteres
             if len(description) > 300:
-                description = description[:297] + "..."
+                # Buscar el último punto, signo de exclamación o interrogación antes del límite
+                truncated = description[:297]
+                last_sentence_end = max(
+                    truncated.rfind('.'),
+                    truncated.rfind('!'),
+                    truncated.rfind('?')
+                )
+                
+                if last_sentence_end > 200:  # Si hay una oración completa razonablemente larga
+                    description = truncated[:last_sentence_end + 1]
+                else:
+                    # Si no, buscar la última coma o punto y coma
+                    last_pause = max(
+                        truncated.rfind(','),
+                        truncated.rfind(';'),
+                        truncated.rfind(':')
+                    )
+                    if last_pause > 200:
+                        description = truncated[:last_pause + 1]
+                    else:
+                        # Como último recurso, cortar en la última palabra completa
+                        last_space = truncated.rfind(' ')
+                        if last_space > 200:
+                            description = truncated[:last_space] + "..."
+                        else:
+                            description = truncated + "..."
             
             return description
         else:
